@@ -146,3 +146,74 @@ exampleStoreInstance.getters("getTodo", 1); // { id: 1, title: "wash clothes", c
 exampleStoreInstance.commit("increment", 5); //modify count state
 exampleStoreInstance.getState; // {...state} returns state objects
 ```
+
+### Subscriptions
+
+Subscriptions are used to to actively listen for state changes.
+
+```javascript
+import CreateStore from "./";
+
+interface StateInterface {
+  count: number;
+  name: string;
+  todo: [];
+  words: string[];
+}
+
+const exampleStoreInstance =
+  new CreateStore() <
+  StateInterface >
+  {
+    state: {
+      count: 0,
+      name: "John",
+      words: ["state"],
+      todo: [
+        { id: 1, title: "wash clothes", completed: false },
+        { id: 2, title: "watch movie", completed: true },
+      ],
+    },
+    mutations: {
+      increment(state, num: number) {
+        state.count = num;
+        console.log("increment called", state);
+      },
+      decrement(state) {
+        state.count--;
+        console.log("decrement called", state);
+      },
+    },
+    getters: {
+      getCount(state) {
+        return state.count;
+      },
+      getCountsPlus(state) {
+        return state.count + 2;
+      },
+      getTodo(state, id) {
+        return state.todo.find((i) => i.id === id);
+      },
+    },
+  };
+
+const statesToWatch = ["count", "name"];
+
+exampleStoreInstance.subscribeEvents(
+  (prevState, changes) => {
+    console.log("previous state", prevState);
+    console.log("changes made", changes);
+  },
+  [statesToWatch]
+);
+
+setInterval(() => {
+  exampleStoreInstance.commit("increment", 2);
+}, 2000);
+```
+
+To cancel subscriptions to an event,
+
+```javascript
+exampleStoreInstance.disableEventListeners();
+```
