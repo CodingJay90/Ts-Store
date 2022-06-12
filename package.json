@@ -1,8 +1,16 @@
 {
   "name": "ts-store",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "A state management app for Vanilla-typescript",
+  "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CodingJay90/Ts-Store.git"
+  },
+  "homepage": "https://github.com/CodingJay90/Ts-Store#readme",
+  "keywords": [
+    "Ts"
+  ],
   "dependencies": {
     "immutable": "^4.1.0"
   },
@@ -13,6 +21,6 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc"
   },
-  "author": "",
+  "author": "CodingJay90",
   "license": "ISC"
 }
