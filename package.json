@@ -1,5 +1,5 @@
 {
-  "name": "ts-store",
+  "name": "vanilla-ts-store",
   "version": "1.0.0",
   "description": "A state management app for Vanilla-typescript",
   "main": "dist/index.js",

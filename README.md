@@ -5,7 +5,7 @@ A state management Library inspired by Vuex
 ## Usage
 
 ```javascript
-import CreateStore from './';
+import CreateStore from "vanilla-ts-store";
 
 const exampleStoreInstance = new CreateStore<{
   count: number;
@@ -25,7 +25,7 @@ const exampleStoreInstance = new CreateStore<{
 ### State
 
 ```javascript
-import CreateStore from "./";
+import CreateStore from "vanilla-ts-store";
 
 interface StateInterface {
   count: number;
@@ -59,7 +59,7 @@ console.log(exampleStoreInstance.getState); // {counter: 0, name: "jimmy"}
 State are only allowed to be modified through mutations as state is immutable
 
 ```javascript
-import CreateStore from "./";
+import CreateStore from "vanilla-ts-store";
 
 interface StateInterface {
   count: number;
@@ -96,7 +96,7 @@ exampleStore.commit("changeName"); // {counter: 2, name: "Ade"}
 Getter functions are used to assess some property of a state
 
 ```javascript
-import CreateStore from "./";
+import CreateStore from "vanilla-ts-store";
 
 interface StateInterface {
   count: number;
@@ -152,7 +152,7 @@ exampleStoreInstance.getState; // {...state} returns state objects
 Subscriptions are used to to actively listen for state changes.
 
 ```javascript
-import CreateStore from "./";
+import CreateStore from "vanilla-ts-store";
 
 interface StateInterface {
   count: number;
