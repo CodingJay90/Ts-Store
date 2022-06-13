@@ -1,6 +1,6 @@
 {
   "name": "vanilla-ts-store",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "A state management app for Vanilla-typescript",
   "main": "dist/index.js",
   "repository": {
@@ -9,7 +9,11 @@
   },
   "homepage": "https://github.com/CodingJay90/Ts-Store#readme",
   "keywords": [
-    "Ts"
+    "Ts",
+    "JS",
+    "Typescript",
+    "Redux",
+    "Vuex"
   ],
   "dependencies": {
     "immutable": "^4.1.0"
