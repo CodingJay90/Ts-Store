@@ -1,7 +1,7 @@
 import { List, Set, Map, fromJS, isKeyed } from "immutable";
 
 interface Mutations<T> {
-  [index: string]: (x: T, y?: any) => void;
+  [index: string]: (x: T, y?: any) => any;
 }
 type GProps<T> = { [x: number | string]: T };
 
@@ -16,7 +16,7 @@ interface Properties<T> {
 }
 
 class CreateStore<T extends object> {
-  private store: Properties<T>;
+  private store: Readonly<Properties<T>>;
   private state: unknown;
   private prevState: T | null;
   private isListeningForChanges: boolean;
@@ -29,7 +29,7 @@ class CreateStore<T extends object> {
     this.store = store;
     this.prevState = null;
     this.eventArgs = null;
-    this.isListeningForChanges = true;
+    this.isListeningForChanges = false;
 
     const val = fromJS({ ...this.store.state }, function (key, value, path) {
       return value.toJSON();
@@ -82,6 +82,7 @@ class CreateStore<T extends object> {
     const prevState = this.prevState as T;
     const changes = this.compareState(newState, prevState);
     const keys: string[] = Object.keys(changes); //dependencies array to watch
+    console.log();
 
     if (!dependencies.length) return cb(prevState, changes); //if an empty dependency is passed in or no dependency array return the cb function
     //check to see if any item in the dependency array is included in the updated state
@@ -94,6 +95,7 @@ class CreateStore<T extends object> {
     cb: (args: T, changes: Partial<T> | T) => any,
     dependencies: string[] = []
   ) {
+    this.isListeningForChanges = true;
     this.eventArgs = { cb, dependencies };
   }
 
@@ -134,4 +136,31 @@ class CreateStore<T extends object> {
  * }
  
  */
+
+// const store = new CreateStore<{ count: number; name: string }>({
+//   state: {
+//     count: 0,
+//     name: "mike",
+//   },
+//   mutations: {
+//     increment(state, num: number) {
+//       console.log(state);
+//       state.count = state.count + num;
+//     },
+//   },
+//   getters: {
+//     getterFunctions(state, additionalArgs) {
+//       return state.name;
+//     },
+//   },
+// });
+
+// store.subscribeEvents(
+//   (prevState, changes) => {
+//     console.log("new changes made", changes);
+//   },
+//   [""]
+// );
+
+// store.commit("increment", 1);
 export default CreateStore;
