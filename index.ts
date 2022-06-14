@@ -51,7 +51,6 @@ class CreateStore<T extends object> {
 
   private set setState(newState: T) {
     if (JSON.stringify(newState) === JSON.stringify(this.state)) {
-      console.log("Nothing changed.");
       return;
     }
     this.prevState = this.state as T;
@@ -122,45 +121,5 @@ class CreateStore<T extends object> {
     return diff as Partial<T> | T;
   }
 }
-/** @CreateStore<StateInterface>
- * @params {
- *  state: initialState,
- *  mutations: {
- *    mutationFunctions() {}
- *  },
- *  getters: {
- *    getterFunctions(state, additionalArgs) {
- *      return state.whatever
- *    }
- *  }
- * }
- 
- */
 
-// const store = new CreateStore<{ count: number; name: string }>({
-//   state: {
-//     count: 0,
-//     name: "mike",
-//   },
-//   mutations: {
-//     increment(state, num: number) {
-//       console.log(state);
-//       state.count = state.count + num;
-//     },
-//   },
-//   getters: {
-//     getterFunctions(state, additionalArgs) {
-//       return state.name;
-//     },
-//   },
-// });
-
-// store.subscribeEvents(
-//   (prevState, changes) => {
-//     console.log("new changes made", changes);
-//   },
-//   [""]
-// );
-
-// store.commit("increment", 1);
 export default CreateStore;
