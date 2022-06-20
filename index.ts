@@ -39,25 +39,54 @@ class CreateStore<T extends object> {
   }
 
   public commit(method: string, payload?: unknown) {
-    const state = { ...this.getState };
+    let state = JSON.parse(JSON.stringify(this.store.state));
+
     const findIndexOfMutations = Object.keys(this.store?.mutations!).findIndex(
       (i) => i === method
     );
     if (findIndexOfMutations === -1)
       throw new Error(`Cannot find mutation with the name ${method}`);
     this.store.mutations![method](state, payload); //call on the mutation function
-    this.setState = state;
+    this.setState = this.compareState(state, this.store.state) as T;
+  }
+
+  private typeCheck(value: any) {
+    const return_value = Object.prototype.toString.call(value);
+    const type = return_value.substring(
+      return_value.indexOf(" ") + 1,
+      return_value.indexOf("]")
+    );
+
+    return type.toLowerCase();
   }
 
   private set setState(newState: T) {
-    if (JSON.stringify(newState) === JSON.stringify(this.state)) {
-      return;
-    }
+    Object.entries(newState).map(([key, value]) => {
+      let state = this.state as any;
+      switch (this.typeCheck(value)) {
+        case "array":
+          state[key] = [...value];
+          break;
+        case "date":
+        case "number":
+        case "boolean":
+        case "null":
+        case "undefined":
+        case "function":
+        case "symbol":
+          state[key] = value;
+          break;
+        case "object":
+          state[key] = { ...state[key], ...value };
+          break;
+        default:
+          state[key] = value;
+          break;
+      }
+    });
     this.prevState = this.state as T;
-    this.state = newState;
     if (this.isListeningForChanges) this.stateListener();
   }
-
   public get getState(): T {
     const state = this.state as T;
     const derivedState = { ...state };
@@ -81,7 +110,6 @@ class CreateStore<T extends object> {
     const prevState = this.prevState as T;
     const changes = this.compareState(newState, prevState);
     const keys: string[] = Object.keys(changes); //dependencies array to watch
-    console.log();
 
     if (!dependencies.length) return cb(prevState, changes); //if an empty dependency is passed in or no dependency array return the cb function
     //check to see if any item in the dependency array is included in the updated state
