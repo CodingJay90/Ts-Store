@@ -39,15 +39,17 @@ class CreateStore<T extends object> {
   }
 
   public commit(method: string, payload?: unknown) {
-    let state = JSON.parse(JSON.stringify(this.store.state));
+    let n = JSON.parse(JSON.stringify(this.store.state)); //create a new copy
+    this.prevState = JSON.parse(JSON.stringify(this.state));
 
     const findIndexOfMutations = Object.keys(this.store?.mutations!).findIndex(
       (i) => i === method
     );
     if (findIndexOfMutations === -1)
       throw new Error(`Cannot find mutation with the name ${method}`);
-    this.store.mutations![method](state, payload); //call on the mutation function
-    this.setState = this.compareState(state, this.store.state) as T;
+    this.store.mutations![method](n, payload); //call on the mutation function
+
+    this.setState = this.compareState(n, this.store.state) as T;
   }
 
   private typeCheck(value: any) {
@@ -84,8 +86,8 @@ class CreateStore<T extends object> {
           break;
       }
     });
-    this.prevState = this.state as T;
-    if (this.isListeningForChanges) this.stateListener();
+
+    if (this.isListeningForChanges) this.stateListener(newState);
   }
   public get getState(): T {
     const state = this.state as T;
@@ -100,15 +102,13 @@ class CreateStore<T extends object> {
     throw new Error(`${method} not found`);
   }
 
-  private stateListener(): void {
+  private stateListener(changes: Partial<T> | T): void {
     if (this.eventArgs === null)
       throw new Error(
         "Event subscriptions needs to be registered before a commit"
       );
     const { cb, dependencies } = this.eventArgs;
-    const newState = this.state as T;
     const prevState = this.prevState as T;
-    const changes = this.compareState(newState, prevState);
     const keys: string[] = Object.keys(changes); //dependencies array to watch
 
     if (!dependencies.length) return cb(prevState, changes); //if an empty dependency is passed in or no dependency array return the cb function
