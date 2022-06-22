@@ -39,9 +39,10 @@ class CreateStore<T extends object> {
   }
 
   public commit(method: string, payload?: unknown) {
-    let n = JSON.parse(JSON.stringify(this.store.state)); //create a new copy
+    let n = Object.freeze(
+      structuredClone(JSON.parse(JSON.stringify(this.getState)))
+    ); //create a new copy
     this.prevState = JSON.parse(JSON.stringify(this.state));
-
     const findIndexOfMutations = Object.keys(this.store?.mutations!).findIndex(
       (i) => i === method
     );
@@ -90,8 +91,9 @@ class CreateStore<T extends object> {
     if (this.isListeningForChanges) this.stateListener(newState);
   }
   public get getState(): T {
-    const state = this.state as T;
-    const derivedState = { ...state };
+    const derivedState = Object.freeze(
+      structuredClone(JSON.parse(JSON.stringify(this.state)))
+    );
     return derivedState;
   }
 
@@ -149,5 +151,4 @@ class CreateStore<T extends object> {
     return diff as Partial<T> | T;
   }
 }
-
 export default CreateStore;
