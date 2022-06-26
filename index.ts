@@ -9,7 +9,7 @@ interface Getters<T> {
   [index: string]: (x: T, y?: any) => keyof GProps<T> | T;
 }
 interface Properties<T> {
-  readonly state: T;
+  state: T;
   mutations?: Mutations<T>;
   getters?: Getters<T>;
   actions?: any;
@@ -39,9 +39,7 @@ class CreateStore<T extends object> {
   }
 
   public commit(method: string, payload?: unknown) {
-    let n = Object.freeze(
-      structuredClone(JSON.parse(JSON.stringify(this.getState)))
-    ); //create a new copy
+    let n = structuredClone(JSON.parse(JSON.stringify(this.getState))); //create a new copy
     this.prevState = JSON.parse(JSON.stringify(this.state));
     const findIndexOfMutations = Object.keys(this.store?.mutations!).findIndex(
       (i) => i === method
@@ -151,4 +149,5 @@ class CreateStore<T extends object> {
     return diff as Partial<T> | T;
   }
 }
+
 export default CreateStore;
